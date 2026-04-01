@@ -1,0 +1,69 @@
+<Window x:Class="TaskNoteTracker.Windows.HistoryWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Activity History" Height="600" Width="900"
+        WindowStartupLocation="CenterScreen">
+    <Grid Margin="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Filter bar -->
+        <WrapPanel Grid.Row="0" Margin="0,0,0,8" Orientation="Horizontal">
+            <TextBlock Text="From:" VerticalAlignment="Center" Margin="0,0,4,0"/>
+            <DatePicker x:Name="FromDate" Width="130" Margin="0,0,12,0"/>
+            <TextBlock Text="To:" VerticalAlignment="Center" Margin="0,0,4,0"/>
+            <DatePicker x:Name="ToDate" Width="130" Margin="0,0,12,0"/>
+            <TextBlock Text="Type:" VerticalAlignment="Center" Margin="0,0,4,0"/>
+            <ComboBox x:Name="TypeFilter" Width="140" Margin="0,0,12,0"
+                      SelectionChanged="TypeFilter_SelectionChanged"/>
+            <TextBlock Text="Search:" VerticalAlignment="Center" Margin="0,0,4,0"/>
+            <TextBox x:Name="SearchBox" Width="180" Margin="0,0,12,0"
+                     TextChanged="SearchBox_TextChanged"/>
+            <Button Content="Apply" Width="60" Click="Apply_Click"
+                    Margin="0,0,8,0"/>
+            <Button Content="Clear" Width="60" Click="Clear_Click"/>
+        </WrapPanel>
+
+        <!-- Export buttons -->
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,8">
+            <Button Content="Export CSV" Width="100" Margin="0,0,8,0"
+                    Click="ExportCsv_Click"/>
+            <Button Content="Export Excel" Width="110"
+                    Click="ExportExcel_Click"/>
+        </StackPanel>
+
+        <!-- Data grid -->
+        <DataGrid Grid.Row="2" x:Name="EntriesGrid"
+                  AutoGenerateColumns="False" IsReadOnly="True"
+                  CanUserAddRows="False" CanUserDeleteRows="False"
+                  SelectionMode="Single" GridLinesVisibility="Horizontal">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="BDT Time" Binding="{Binding BdtTime}" Width="130"/>
+                <DataGridTextColumn Header="CDT Time" Binding="{Binding CdtTime}" Width="130"/>
+                <DataGridTextColumn Header="Task Type" Binding="{Binding TaskType}" Width="120"/>
+                <DataGridTextColumn Header="Activity" Binding="{Binding Activity}" Width="*"/>
+                <DataGridTextColumn Header="Notes" Binding="{Binding Notes}" Width="160"/>
+                <DataGridTemplateColumn Header="Actions" Width="130">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <Button Content="Edit" Width="55" Margin="0,1,4,1"
+                                        Tag="{Binding}" Click="Edit_Click"/>
+                                <Button Content="Delete" Width="55" Margin="0,1,0,1"
+                                        Tag="{Binding}" Click="Delete_Click"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <!-- Row count -->
+        <TextBlock Grid.Row="3" x:Name="RowCountLabel"
+                   Margin="0,6,0,0" Foreground="Gray" FontSize="11"/>
+    </Grid>
+</Window>

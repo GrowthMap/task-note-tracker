@@ -1,0 +1,30 @@
+<Window x:Class="TaskNoteTracker.Windows.TrackingPopupWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="What are you doing?" Height="380" Width="480"
+        WindowStartupLocation="CenterScreen"
+        Topmost="True" ResizeMode="NoResize" ShowInTaskbar="False">
+    <StackPanel Margin="20">
+        <TextBlock Text="Task Type" FontWeight="SemiBold" Margin="0,0,0,4"/>
+        <ComboBox x:Name="TaskTypeCombo" Margin="0,0,0,14"
+                  SelectionChanged="TaskTypeCombo_SelectionChanged"/>
+
+        <TextBlock Text="What are you specifically doing? *"
+                   FontWeight="SemiBold" Margin="0,0,0,4"/>
+        <TextBox x:Name="ActivityBox" Height="70"
+                 TextWrapping="Wrap" AcceptsReturn="True"
+                 VerticalScrollBarVisibility="Auto" Margin="0,0,0,14"/>
+
+        <TextBlock Text="Notes" FontWeight="SemiBold" Margin="0,0,0,4"/>
+        <TextBox x:Name="NotesBox" Height="80"
+                 TextWrapping="Wrap" AcceptsReturn="True"
+                 VerticalScrollBarVisibility="Auto" Margin="0,0,0,18"/>
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Content="Skip" Width="80" Margin="0,0,8,0"
+                    Click="Skip_Click"/>
+            <Button Content="Submit" Width="80"
+                    Click="Submit_Click"/>
+        </StackPanel>
+    </StackPanel>
+</Window>
