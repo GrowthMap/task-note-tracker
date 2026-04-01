@@ -53,6 +53,13 @@ public sealed class TrayManager : IDisposable
         _toggleItem.Text = "Stop Tracking";
         _notifyIcon.Text = "Task Note Tracker — Tracking";
         _timer.Start();
+        System.Windows.Application.Current.Dispatcher.Invoke(() =>
+        {
+            if (_popup != null) return;
+            _popup = new TrackingPopupWindow(_db);
+            _popup.Closed += OnPopupClosed;
+            _popup.Show();
+        });
     }
 
     private void StopTracking()
