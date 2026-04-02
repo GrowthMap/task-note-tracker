@@ -11,10 +11,10 @@ namespace TaskNoteTracker.Windows;
 public partial class HistoryWindow : Window
 {
     private readonly AppDbContext _db;
-    private readonly AiService _aiService;
     private readonly EntryService _entryService;
     private readonly TaskTypeService _taskTypeService;
     private readonly ExportService _exportService = new();
+    private readonly AiService _aiService;
 
     public HistoryWindow(AppDbContext db, AiService aiService)
     {
@@ -127,6 +127,29 @@ public partial class HistoryWindow : Window
         if (dialog.ShowDialog() != true) return;
         await File.WriteAllBytesAsync(dialog.FileName, _exportService.ExportToExcel(entries));
         MessageBox.Show("Excel file exported.", "Done", MessageBoxButton.OK);
+    }
+
+    private async void GenerateSummary_Click(object sender, RoutedEventArgs e)
+    {
+        GenerateSummaryBtn.IsEnabled = false;
+        GenerateSummaryBtn.Content = "Generating...";
+        SummaryPanel.Visibility = Visibility.Visible;
+        SummaryBox.Text = string.Empty;
+
+        try
+        {
+            var entries = await _entryService.GetFilteredAsync(BuildFilter());
+            SummaryBox.Text = await _aiService.GenerateSummaryAsync(entries);
+        }
+        catch (Exception ex)
+        {
+            SummaryBox.Text = $"OpenAI error: {ex.Message}";
+        }
+        finally
+        {
+            GenerateSummaryBtn.IsEnabled = true;
+            GenerateSummaryBtn.Content = "Generate Summary";
+        }
     }
 }
 

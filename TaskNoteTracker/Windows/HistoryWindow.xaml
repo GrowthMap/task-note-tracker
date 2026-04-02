@@ -9,6 +9,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <!-- Filter bar -->
@@ -28,12 +29,14 @@
             <Button Content="Clear" Width="60" Click="Clear_Click"/>
         </WrapPanel>
 
-        <!-- Export buttons -->
+        <!-- Toolbar: export + AI summary -->
         <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,8">
             <Button Content="Export CSV" Width="100" Margin="0,0,8,0"
                     Click="ExportCsv_Click"/>
-            <Button Content="Export Excel" Width="110"
+            <Button Content="Export Excel" Width="110" Margin="0,0,16,0"
                     Click="ExportExcel_Click"/>
+            <Button x:Name="GenerateSummaryBtn" Content="Generate Summary" Width="140"
+                    Click="GenerateSummary_Click"/>
         </StackPanel>
 
         <!-- Data grid -->
@@ -62,8 +65,19 @@
             </DataGrid.Columns>
         </DataGrid>
 
+        <!-- AI summary panel (hidden until first generation) -->
+        <Border Grid.Row="3" x:Name="SummaryPanel" Visibility="Collapsed"
+                BorderBrush="#DDDDDD" BorderThickness="1"
+                Margin="0,8,0,0" Padding="8">
+            <TextBox x:Name="SummaryBox"
+                     IsReadOnly="True" TextWrapping="Wrap"
+                     VerticalScrollBarVisibility="Auto" AcceptsReturn="True"
+                     MaxHeight="180" FontSize="12"
+                     Background="Transparent" BorderThickness="0"/>
+        </Border>
+
         <!-- Row count -->
-        <TextBlock Grid.Row="3" x:Name="RowCountLabel"
+        <TextBlock Grid.Row="4" x:Name="RowCountLabel"
                    Margin="0,6,0,0" Foreground="Gray" FontSize="11"/>
     </Grid>
 </Window>
