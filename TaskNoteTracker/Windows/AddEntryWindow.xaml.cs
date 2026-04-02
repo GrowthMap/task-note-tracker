@@ -121,7 +121,11 @@ public partial class AddEntryWindow : Window
             timestampUtc = DateTime.UtcNow;
         }
 
-        await _entryService.CreateAsync(timestampUtc, ActivityBox.Text, NotesBox.Text, taskType.Id);
+        await _entryService.CreateAsync(
+            timestampUtc,
+            ActivityBox.Text,
+            string.IsNullOrWhiteSpace(NotesBox.Text) ? null : NotesBox.Text,
+            taskType.Id);
         Close();
     }
 
