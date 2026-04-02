@@ -130,7 +130,6 @@ public class EntryServiceTests : IDisposable
     [Fact]
     public async Task CreateAsync_WithBdtConversion_StoresCorrectUtc()
     {
-        // BDT 2026-04-03 12:00 should be stored as UTC 2026-04-03 06:00
         var bdt = new DateTime(2026, 4, 3, 12, 0, 0);
         var timestampUtc = TimezoneService.ToUtc(bdt);
 
