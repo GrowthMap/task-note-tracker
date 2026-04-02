@@ -111,9 +111,9 @@ public partial class AddEntryWindow : Window
                     MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
-            var bdt = new DateTime(
-                selectedDate.Year, selectedDate.Month, selectedDate.Day,
-                hour, minute, 0);
+            var bdt = DateTime.SpecifyKind(
+                new DateTime(selectedDate.Year, selectedDate.Month, selectedDate.Day, hour, minute, 0),
+                DateTimeKind.Unspecified);
             timestampUtc = TimezoneService.ToUtc(bdt);
         }
         else
