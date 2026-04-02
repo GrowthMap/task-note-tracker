@@ -127,6 +127,18 @@ public class EntryServiceTests : IDisposable
         found.Should().BeNull();
     }
 
+    [Fact]
+    public async Task CreateAsync_WithBdtConversion_StoresCorrectUtc()
+    {
+        // BDT 2026-04-03 12:00 should be stored as UTC 2026-04-03 06:00
+        var bdt = new DateTime(2026, 4, 3, 12, 0, 0);
+        var timestampUtc = TimezoneService.ToUtc(bdt);
+
+        var entry = await _service.CreateAsync(timestampUtc, "BDT entry", null, _taskType.Id);
+
+        entry.TimestampUtc.Should().Be(new DateTime(2026, 4, 3, 6, 0, 0, DateTimeKind.Utc));
+    }
+
     public void Dispose()
     {
         _db.Dispose();
