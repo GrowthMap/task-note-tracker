@@ -9,6 +9,8 @@ namespace TaskNoteTracker.Tray;
 public sealed class TrayManager : IDisposable
 {
     private readonly AppDbContext _db;
+    private readonly AiService _aiService;
+    private readonly SettingsService _settingsService;
     private readonly TrackingTimer _timer;
     private readonly NotifyIcon _notifyIcon;
     private readonly ToolStripMenuItem _toggleItem;
@@ -17,9 +19,11 @@ public sealed class TrayManager : IDisposable
 
     public event EventHandler? ExitRequested;
 
-    public TrayManager(AppDbContext db)
+    public TrayManager(AppDbContext db, AiService aiService, SettingsService settingsService)
     {
         _db = db;
+        _aiService = aiService;
+        _settingsService = settingsService;
         _timer = new TrackingTimer(TimeSpan.FromMinutes(30));
         _timer.IntervalElapsed += OnTimerElapsed;
 
@@ -29,6 +33,9 @@ public sealed class TrayManager : IDisposable
         menu.Items.Add(new ToolStripSeparator());
         menu.Items.Add("Open History", null, OnOpenHistory);
         menu.Items.Add("Manage Task Types", null, OnManageTaskTypes);
+        menu.Items.Add(new ToolStripSeparator());
+        menu.Items.Add("AI Insights", null, OnOpenAiInsights);
+        menu.Items.Add("Settings", null, OnOpenSettings);
         menu.Items.Add(new ToolStripSeparator());
         menu.Items.Add("Exit", null, OnExit);
 
@@ -94,11 +101,19 @@ public sealed class TrayManager : IDisposable
 
     private void OnOpenHistory(object? sender, EventArgs e) =>
         System.Windows.Application.Current.Dispatcher.Invoke(() =>
-            new HistoryWindow(_db).Show());
+            new HistoryWindow(_db, _aiService).Show());
 
     private void OnManageTaskTypes(object? sender, EventArgs e) =>
         System.Windows.Application.Current.Dispatcher.Invoke(() =>
             new TaskTypeManagerWindow(_db).ShowDialog());
+
+    private void OnOpenAiInsights(object? sender, EventArgs e) =>
+        System.Windows.Application.Current.Dispatcher.Invoke(() =>
+            new AiInsightsWindow(_db, _aiService).Show());
+
+    private void OnOpenSettings(object? sender, EventArgs e) =>
+        System.Windows.Application.Current.Dispatcher.Invoke(() =>
+            new SettingsWindow(_settingsService).ShowDialog());
 
     private void OnExit(object? sender, EventArgs e) =>
         ExitRequested?.Invoke(this, EventArgs.Empty);

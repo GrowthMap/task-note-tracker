@@ -11,13 +11,15 @@ namespace TaskNoteTracker.Windows;
 public partial class HistoryWindow : Window
 {
     private readonly AppDbContext _db;
+    private readonly AiService _aiService;
     private readonly EntryService _entryService;
     private readonly TaskTypeService _taskTypeService;
     private readonly ExportService _exportService = new();
 
-    public HistoryWindow(AppDbContext db)
+    public HistoryWindow(AppDbContext db, AiService aiService)
     {
         _db = db;
+        _aiService = aiService;
         _entryService = new EntryService(db);
         _taskTypeService = new TaskTypeService(db);
         InitializeComponent();

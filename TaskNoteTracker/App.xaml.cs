@@ -30,7 +30,10 @@ public partial class App : Application
 
         new StartupService().EnsureEnabled();
 
-        _trayManager = new TrayManager(_db);
+        var settingsService = new SettingsService();
+        var aiService = new AiService(settingsService);
+
+        _trayManager = new TrayManager(_db, aiService, settingsService);
         _trayManager.ExitRequested += (_, _) => Shutdown();
     }
 
