@@ -35,4 +35,12 @@ public class TimezoneServiceTests
         var utc = new DateTime(2026, 1, 15, 12, 0, 0, DateTimeKind.Utc);
         TimezoneService.ToCdt(utc).Should().Be(new DateTime(2026, 1, 15, 6, 0, 0));
     }
+
+    [Fact]
+    public void ToUtc_ConvertsBdtToCorrectUtc()
+    {
+        // BDT is UTC+6, no DST — midday BDT should be 06:00 UTC
+        var bdt = new DateTime(2026, 4, 3, 12, 0, 0);
+        TimezoneService.ToUtc(bdt).Should().Be(new DateTime(2026, 4, 3, 6, 0, 0, DateTimeKind.Utc));
+    }
 }

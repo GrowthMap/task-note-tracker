@@ -13,4 +13,8 @@ public static class TimezoneService
 
     public static DateTime ToCdt(DateTime utc) =>
         TimeZoneInfo.ConvertTimeFromUtc(DateTime.SpecifyKind(utc, DateTimeKind.Utc), CentralZone);
+
+    public static DateTime ToUtc(DateTime bdt) =>
+        TimeZoneInfo.ConvertTimeToUtc(
+            DateTime.SpecifyKind(bdt, DateTimeKind.Unspecified), BdtZone);
 }
