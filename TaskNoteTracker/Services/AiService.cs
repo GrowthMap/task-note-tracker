@@ -18,7 +18,13 @@ public class AiService(SettingsService settingsService)
     private const string NoEntriesError =
         "No entries to analyze. Try adjusting the filters or date range.";
 
-    public async Task<string> GenerateSummaryAsync(IEnumerable<TaskEntry> entries)
+    public Task<string> GenerateSummaryAsync(IEnumerable<TaskEntry> entries) =>
+        CallApiAsync(entries, BuildSummaryPrompt);
+
+    public Task<string> AnalyzePatternsAsync(IEnumerable<TaskEntry> entries) =>
+        CallApiAsync(entries, BuildPatternsPrompt);
+
+    private async Task<string> CallApiAsync(IEnumerable<TaskEntry> entries, Func<List<TaskEntry>, string> buildPrompt)
     {
         var settings = settingsService.Load();
         if (string.IsNullOrWhiteSpace(settings.ApiKey))
@@ -32,26 +38,7 @@ public class AiService(SettingsService settingsService)
         var response = await client.CompleteChatAsync(
         [
             new SystemChatMessage(SystemPrompt),
-            new UserChatMessage(BuildSummaryPrompt(list))
-        ]);
-        return response.Value.Content[0].Text;
-    }
-
-    public async Task<string> AnalyzePatternsAsync(IEnumerable<TaskEntry> entries)
-    {
-        var settings = settingsService.Load();
-        if (string.IsNullOrWhiteSpace(settings.ApiKey))
-            return ApiKeyError;
-
-        var list = entries.ToList();
-        if (list.Count == 0)
-            return NoEntriesError;
-
-        var client = new ChatClient(model: settings.Model, apiKey: settings.ApiKey);
-        var response = await client.CompleteChatAsync(
-        [
-            new SystemChatMessage(SystemPrompt),
-            new UserChatMessage(BuildPatternsPrompt(list))
+            new UserChatMessage(buildPrompt(list))
         ]);
         return response.Value.Content[0].Text;
     }
@@ -63,12 +50,7 @@ public class AiService(SettingsService settingsService)
             "Summarize the following work entries, grouped by task type. " +
             "Highlight key activities and time distribution:");
         sb.AppendLine();
-        foreach (var e in entries)
-        {
-            sb.AppendLine($"[{e.TimestampUtc:yyyy-MM-dd HH:mm} UTC] [{e.TaskType.Name}] {e.Activity}");
-            if (!string.IsNullOrWhiteSpace(e.Notes))
-                sb.AppendLine($"  Notes: {e.Notes}");
-        }
+        AppendEntries(sb, entries);
         return sb.ToString();
     }
 
@@ -81,12 +63,17 @@ public class AiService(SettingsService settingsService)
         sb.AppendLine("- Recurring activities");
         sb.AppendLine("- Actionable suggestions (e.g. scheduling recommendations)");
         sb.AppendLine();
+        AppendEntries(sb, entries);
+        return sb.ToString();
+    }
+
+    private static void AppendEntries(StringBuilder sb, List<TaskEntry> entries)
+    {
         foreach (var e in entries)
         {
             sb.AppendLine($"[{e.TimestampUtc:yyyy-MM-dd HH:mm} UTC] [{e.TaskType.Name}] {e.Activity}");
             if (!string.IsNullOrWhiteSpace(e.Notes))
                 sb.AppendLine($"  Notes: {e.Notes}");
         }
-        return sb.ToString();
     }
 }
