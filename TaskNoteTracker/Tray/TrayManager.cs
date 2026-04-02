@@ -13,6 +13,7 @@ public sealed class TrayManager : IDisposable
     private readonly SettingsService _settingsService;
     private readonly TrackingTimer _timer;
     private readonly NotifyIcon _notifyIcon;
+    private readonly ContextMenuStrip _menu;
     private readonly ToolStripMenuItem _toggleItem;
     private TrackingPopupWindow? _popup;
     private bool _isTracking;
@@ -28,22 +29,22 @@ public sealed class TrayManager : IDisposable
         _timer.IntervalElapsed += OnTimerElapsed;
 
         _toggleItem = new ToolStripMenuItem("Start Tracking", null, OnToggleTracking);
-        var menu = new ContextMenuStrip();
-        menu.Items.Add(_toggleItem);
-        menu.Items.Add(new ToolStripSeparator());
-        menu.Items.Add("Open History", null, OnOpenHistory);
-        menu.Items.Add("Manage Task Types", null, OnManageTaskTypes);
-        menu.Items.Add(new ToolStripSeparator());
-        menu.Items.Add("AI Insights", null, OnOpenAiInsights);
-        menu.Items.Add("Settings", null, OnOpenSettings);
-        menu.Items.Add(new ToolStripSeparator());
-        menu.Items.Add("Exit", null, OnExit);
+        _menu = new ContextMenuStrip();
+        _menu.Items.Add(_toggleItem);
+        _menu.Items.Add(new ToolStripSeparator());
+        _menu.Items.Add("Open History", null, OnOpenHistory);
+        _menu.Items.Add("Manage Task Types", null, OnManageTaskTypes);
+        _menu.Items.Add(new ToolStripSeparator());
+        _menu.Items.Add("AI Insights", null, OnOpenAiInsights);
+        _menu.Items.Add("Settings", null, OnOpenSettings);
+        _menu.Items.Add(new ToolStripSeparator());
+        _menu.Items.Add("Exit", null, OnExit);
 
         _notifyIcon = new NotifyIcon
         {
             Icon = SystemIcons.Application,
             Text = "Task Note Tracker — Not tracking",
-            ContextMenuStrip = menu,
+            ContextMenuStrip = _menu,
             Visible = true
         };
     }
@@ -122,5 +123,6 @@ public sealed class TrayManager : IDisposable
     {
         _timer.Dispose();
         _notifyIcon.Dispose();
+        _menu.Dispose();
     }
 }
