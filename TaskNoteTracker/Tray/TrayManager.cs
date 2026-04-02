@@ -32,6 +32,8 @@ public sealed class TrayManager : IDisposable
         _menu = new ContextMenuStrip();
         _menu.Items.Add(_toggleItem);
         _menu.Items.Add(new ToolStripSeparator());
+        _menu.Items.Add("Add Entry…", null, OnAddEntry);
+        _menu.Items.Add(new ToolStripSeparator());
         _menu.Items.Add("Open History", null, OnOpenHistory);
         _menu.Items.Add("Manage Task Types", null, OnManageTaskTypes);
         _menu.Items.Add(new ToolStripSeparator());
@@ -54,6 +56,10 @@ public sealed class TrayManager : IDisposable
         if (_isTracking) StopTracking();
         else StartTracking();
     }
+
+    private void OnAddEntry(object? sender, EventArgs e) =>
+        System.Windows.Application.Current.Dispatcher.Invoke(() =>
+            new AddEntryWindow(_db).ShowDialog());
 
     private void StartTracking()
     {
