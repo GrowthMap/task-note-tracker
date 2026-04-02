@@ -1,0 +1,29 @@
+<Window x:Class="TaskNoteTracker.Windows.AiInsightsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="AI Insights" Height="520" Width="700"
+        WindowStartupLocation="CenterScreen">
+    <Grid Margin="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <WrapPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,8">
+            <TextBlock Text="Time range:" VerticalAlignment="Center" Margin="0,0,8,0"/>
+            <ComboBox x:Name="RangeBox" Width="130" Margin="0,0,12,0" SelectedIndex="0">
+                <ComboBoxItem Content="Last 30 days"/>
+                <ComboBoxItem Content="Last 90 days"/>
+                <ComboBoxItem Content="All time"/>
+            </ComboBox>
+            <Button x:Name="AnalyzeBtn" Content="Analyze Patterns" Width="130"
+                    Click="Analyze_Click"/>
+        </WrapPanel>
+
+        <TextBox Grid.Row="1" x:Name="ResultBox"
+                 IsReadOnly="True" TextWrapping="Wrap"
+                 VerticalScrollBarVisibility="Auto" AcceptsReturn="True"
+                 FontFamily="Segoe UI" FontSize="13" Padding="8"
+                 Text="Select a time range and click 'Analyze Patterns' to identify trends in your tracked entries."/>
+    </Grid>
+</Window>
